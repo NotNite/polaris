@@ -18,7 +18,7 @@ export default async function handle(connector: Connector, data: Stanza) {
   if (iq.success) {
     console.log("IQ");
 
-    if (iq.data.iq[0].query[0]._attributes?.xmlns === "jabber:iq:roster") {
+    if (iq.data.iq[0].query?.[0]._attributes?.xmlns === "jabber:iq:roster") {
       const roster = iq.data.iq[0].query[0].item!.map((item) => ({
         account: connector.bareJid!,
         jid: item._attributes.jid,

@@ -20,3 +20,21 @@ export interface Message {
   timestamp: number; // Unix seconds
   body: string; // XML
 }
+
+export interface OMEMO {
+  account: string;
+  deviceId: number;
+
+  identityPublicKey: ArrayBuffer;
+  identityPrivateKey: ArrayBuffer;
+
+  spkId: number;
+  spkPublicKey: ArrayBuffer;
+  spkPrivateKey: ArrayBuffer;
+  spkSignature: ArrayBuffer;
+
+  preKeys: {
+    keyId: number;
+    publicKey: ArrayBuffer;
+  }[];
+}

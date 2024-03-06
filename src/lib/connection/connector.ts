@@ -9,6 +9,7 @@ import { z } from "zod";
 import handle from "./handle";
 import { bareJid } from "$lib/utils";
 import { v4 } from "uuid";
+import { setupOMEMO } from "$lib/omemo";
 
 export type UnsubFn = () => void;
 
@@ -37,8 +38,8 @@ export abstract class Connector {
     this.send(stanza);
   }
 
-  protected onConnected(): void {
-    this.sendWithId<z.infer<typeof IQSchema>>({
+  protected async onConnected(): Promise<void> {
+    await this.sendWithId<z.infer<typeof IQSchema>>({
       iq: [
         {
           _attributes: {
@@ -58,7 +59,7 @@ export abstract class Connector {
       ]
     });
 
-    this.sendWithId<z.infer<typeof PresenceSchema>>({
+    await this.sendWithId<z.infer<typeof PresenceSchema>>({
       presence: [
         {
           _attributes: {
@@ -70,6 +71,8 @@ export abstract class Connector {
         }
       ]
     });
+
+    await setupOMEMO(this);
   }
 
   protected async handle(data: Stanza) {

@@ -1,10 +1,11 @@
 import Dexie, { type Table } from "dexie";
-import type { Account, Message, RosterEntry } from "./types";
+import type { Account, Message, OMEMO, RosterEntry } from "./types";
 
 export class PolarisDexie extends Dexie {
   accounts!: Table<Account>;
   roster!: Table<RosterEntry>;
   messages!: Table<Message>;
+  omemo!: Table<OMEMO>;
 
   constructor() {
     super("polaris");
@@ -12,6 +13,12 @@ export class PolarisDexie extends Dexie {
       accounts: "jid",
       roster: "[account+jid]",
       messages: "id, [from+to], timestamp"
+    });
+    this.version(2).stores({
+      accounts: "jid",
+      roster: "[account+jid]",
+      messages: "id, [from+to], timestamp",
+      omemo: "account"
     });
   }
 }

@@ -8,14 +8,18 @@ export type Stanza = {
 } & Record<string, object>;
 
 // xmljs is a bad library lol
-export const StringLiteralSchema = z.array(
-  z.object({ _text: z.union([z.string(), z.array(z.string())]) })
-);
+function child<T extends z.ZodRawShape>(shape: T) {
+  return z.array(z.object<T>(shape));
+}
+export const StringLiteralSchema = child({
+  _text: z.union([z.string(), z.array(z.string())])
+});
 
 export function makeStrLiteral(
-  str: string
+  str: string,
+  attributes?: Record<string, string>
 ): z.infer<typeof StringLiteralSchema> {
-  return [{ _text: [str] }];
+  return [{ _text: [str], ...attributes }];
 }
 
 export function parseStrLiteral(
@@ -25,40 +29,128 @@ export function parseStrLiteral(
   return Array.isArray(text) ? text.join("") : text;
 }
 
-export const IQSchema = z.object({
-  iq: z.array(
-    z.object({
+const PepOmemoSchema = z.union([
+  child({
+    _attributes: z.object({
+      node: z.enum(["urn:xmpp:omemo:2:devices"])
+    }),
+
+    item: child({
       _attributes: z.object({
-        from: z.string().optional(),
-        to: z.string().optional(),
-        type: z.enum(["get", "set", "result", "error"]),
-        xmlns: z.literal("jabber:client").optional()
+        id: z.string()
       }),
 
-      query: z.array(
-        z.object({
-          _attributes: z
-            .object({
-              xmlns: z.literal("jabber:iq:roster")
-            })
-            .optional(),
+      devices: child({
+        _attributes: z.object({
+          xmlns: z.literal("urn:xmpp:omemo:2")
+        }),
 
-          item: z
-            .array(
-              z.object({
-                _attributes: z.object({
-                  jid: z.string(),
-                  name: z.string().optional(),
-                  ask: z.string().optional(),
-                  subscription: z.nativeEnum(SubscriptionType).optional()
-                })
-              })
-            )
-            .optional()
+        device: child({
+          _attributes: z.object({
+            id: z.string(),
+            label: z.string().optional()
+          })
         })
-      )
+      }).optional()
     })
-  )
+  }),
+
+  child({
+    _attributes: z.object({
+      node: z.enum(["urn:xmpp:omemo:2:bundles"])
+    }),
+
+    item: child({
+      _attributes: z.object({
+        id: z.string()
+      }),
+
+      bundle: child({
+        _attributes: z.object({
+          xmlns: z.literal("urn:xmpp:omemo:2")
+        }),
+
+        spk: z.intersection(
+          child({
+            _attributes: z.object({
+              id: z.string()
+            })
+          }),
+          StringLiteralSchema
+        ),
+
+        spks: StringLiteralSchema,
+        ik: StringLiteralSchema,
+
+        prekeys: child({
+          pk: z.intersection(
+            child({
+              _attributes: z.object({
+                id: z.string()
+              })
+            }),
+            StringLiteralSchema
+          )
+        })
+      }).optional()
+    })
+  })
+]);
+
+export const IQSchema = z.object({
+  iq: child({
+    _attributes: z.object({
+      from: z.string().optional(),
+      to: z.string().optional(),
+      type: z.enum(["get", "set", "result", "error"]),
+      xmlns: z.literal("jabber:client").optional()
+    }),
+
+    query: child({
+      _attributes: z
+        .object({
+          xmlns: z.literal("jabber:iq:roster")
+        })
+        .optional(),
+
+      item: child({
+        _attributes: z.object({
+          jid: z.string(),
+          name: z.string().optional(),
+          ask: z.string().optional(),
+          subscription: z.nativeEnum(SubscriptionType).optional()
+        })
+      }).optional()
+    }).optional(),
+
+    pubsub: child({
+      _attributes: z
+        .object({
+          xmlns: z.literal("http://jabber.org/protocol/pubsub")
+        })
+        .optional(),
+
+      publish: PepOmemoSchema.optional()
+    }).optional(),
+
+    "publish-options": child({
+      x: child({
+        _attributes: z.object({
+          xmlns: z.string(),
+          type: z.string()
+        }),
+
+        field: child({
+          _attributes: z.object({
+            var: z.string(),
+            type: z.string().optional()
+          }),
+
+          value: StringLiteralSchema
+        })
+      })
+    }).optional()
+  })
 });
 
 export const PresenceSchema = z.object({

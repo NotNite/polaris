@@ -21,7 +21,7 @@
         if (secret != null) {
           username = jid;
           password = secret;
-          login();
+          //login();
         }
       });
   }
