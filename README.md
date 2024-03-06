@@ -1,0 +1,3 @@
+# polaris
+
+experimental XMPP client

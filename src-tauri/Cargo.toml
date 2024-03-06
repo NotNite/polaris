@@ -1,0 +1,28 @@
+[package]
+name = "polaris"
+version = "0.1.0"
+default-run = "polaris"
+edition = "2021"
+rust-version = "1.60"
+
+[build-dependencies]
+tauri-build = { version = "1.5.1", features = [] }
+
+[dependencies]
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+tauri = { version = "1.6.0", features = [] }
+tokio-xmpp = { git = "https://gitlab.com/jules/xmpp-rs.git", branch = "exitplan" }
+thiserror = "1.0.50"
+anyhow = "1.0.75"
+xmpp-parsers = "0.20.0"
+futures = "0.3.29"
+futures-util = "0.3.29"
+async-stream = "0.3.5"
+keyring = "2.1.0"
+
+[features]
+# this feature is used for production builds or when `devPath` points to the filesystem and the built-in dev server is disabled.
+# If you use cargo directly instead of tauri's cli you can use this feature flag to switch between tauri's `dev` and `build` modes.
+# DO NOT REMOVE!!
+custom-protocol = ["tauri/custom-protocol"]
