@@ -72,7 +72,7 @@
   <form class="input" on:submit|preventDefault={send}>
     <input type="text" bind:value={input} placeholder={`Message ${jid}...`} />
     <button type="submit">
-      <Send class="ml-2 icon-disabled" />
+      <Send class="ml-2" />
     </button>
   </form>
 </div>
