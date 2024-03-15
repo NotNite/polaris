@@ -4,6 +4,7 @@
   import db from "$lib/db";
   import { SubscriptionType } from "$lib/types";
   import { liveQuery } from "dexie";
+  import "../../app.css"; // Import Tailwind
 
   $: myJid = $currentConnection?.bareJid ?? "";
 
@@ -63,5 +64,10 @@
       flex: 1;
       overflow: auto;
     }
+  }
+
+  // Temporary
+  a {
+    @apply text-blue-700 dark:text-blue-400 underline;
   }
 </style>
