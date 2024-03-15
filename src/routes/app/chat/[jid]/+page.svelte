@@ -6,6 +6,7 @@
   import { z } from "zod";
   import { MessageSchema, makeStrLiteral } from "$lib/types/stanza";
   import { v4 } from "uuid";
+  import { Send } from 'svelte-google-materialdesign-icons';
 
   let myJid: string;
   let jid: string;
@@ -57,9 +58,9 @@
 </script>
 
 <div class="chat">
-  <h2>
+  <div class="bg-[#1B1B1E] p-3 px-4 font-bold">
     {jid}
-  </h2>
+  </div>
   <div class="messages">
     <!-- todo: infinite scroller -->
     {#each $messages || [] as message}
@@ -69,8 +70,10 @@
     {/each}
   </div>
   <form class="input" on:submit|preventDefault={send}>
-    <input type="text" bind:value={input} />
-    <button type="submit">Send</button>
+    <input type="text" bind:value={input} placeholder={`Message ${jid}...`} />
+    <button type="submit">
+      <Send class="ml-2 icon-disabled" />
+    </button>
   </form>
 </div>
 
@@ -90,15 +93,21 @@
       flex-direction: column;
       overflow: auto;
       word-wrap: break-word;
+      @apply p-4;
     }
 
     .input {
       display: flex;
       gap: 0.5rem;
+      @apply m-4;
     }
 
     .input input {
-      flex: 1;
+      @apply flex flex-1;
+    }
+
+    input:not([type='checkbox']) {
+      @apply rounded-full px-3 py-2 bg-white text-black dark:bg-neutral-700 dark:text-white outline-none;
     }
   }
 </style>

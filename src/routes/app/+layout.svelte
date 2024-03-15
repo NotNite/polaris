@@ -52,12 +52,12 @@
 <style lang="scss">
   .app {
     display: flex;
-    height: calc(100vh - 1rem);
+    height: 100vh;
     overflow: hidden;
 
     .sidebar {
       min-width: 200px;
-      margin-right: 1rem;
+      @apply bg-neutral-200 dark:bg-[#27272B] p-4;
     }
 
     .content {
@@ -69,5 +69,9 @@
   // Temporary
   a {
     @apply text-blue-700 dark:text-blue-400 underline;
+  }
+
+  input:not([type='checkbox']) {
+    @apply rounded-full px-3 py-2 bg-white text-black dark:bg-neutral-700 dark:text-white w-64;
   }
 </style>
