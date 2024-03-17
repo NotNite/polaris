@@ -144,16 +144,18 @@
 </script>
 
 <div class="roster">
-  <h2>Roster</h2>
+  <h1 class="text-2xl font-bold">Roster</h1>
   <ul>
     {#each $roster || [] as entry}
       <li>
         <a href={`/app/chat/${entry.jid}`}>{entry.jid}</a>
       </li>
+    {:else}
+      <p>No contacts available.</p>
     {/each}
   </ul>
 
-  <h2>Presence requests</h2>
+  <h2 class="text-2xl font-bold mt-4">Presence requests</h2>
   <ul>
     {#each presenceRequests || [] as jid}
       <li>
@@ -161,12 +163,28 @@
         <button on:click={() => replyPresence(jid, true)}>Accept</button>
         <button on:click={() => replyPresence(jid, false)}>Decline</button>
       </li>
+    {:else}
+      <p>No presence requests available.</p>
     {/each}
   </ul>
 
-  <h2>Add new contact</h2>
+  <h2 class="text-2xl font-bold mt-4 mb-2">Add new contact</h2>
   <form on:submit|preventDefault={askPresence}>
     <input id="jid" type="text" bind:value={requestJid} />
     <button type="submit">Add</button>
   </form>
 </div>
+
+<style>
+  .roster {
+    @apply p-4;
+  }
+
+  input:not([type='checkbox']) {
+    @apply rounded-full px-2 py-1 mr-2 bg-white text-black dark:bg-neutral-700 dark:text-white w-64;
+  }
+
+  button {
+    @apply text-blue-400;
+  }
+</style>

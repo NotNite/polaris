@@ -12,14 +12,22 @@
   }
 </script>
 
-<h1>Settings</h1>
-<input
-  id="autologin"
-  type="checkbox"
-  bind:checked={autologin}
-  on:change={applyAutologin}
-/>
-<label for="autologin"
-  >Auto login to this account ({$currentConnection?.bareJid ??
-    "unknown"})</label
->
+<div class="p-4">
+  <h1>Settings</h1>
+  <input
+    id="autologin"
+    type="checkbox"
+    bind:checked={autologin}
+    on:change={applyAutologin}
+  />
+  <label for="autologin"
+    >Auto login to this account ({$currentConnection?.bareJid ??
+      "unknown"})</label
+  >
+</div>
+
+<style>
+  h1 {
+    @apply text-2xl font-bold;
+  }
+</style>
